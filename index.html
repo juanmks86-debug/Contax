@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#378ADD">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Inventario">
+<meta name="description" content="Gestor de inventario y ventas para tu negocio">
+
+<!-- Manifest PWA -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Iconos -->
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+
+<!-- CSS externo -->
+<link rel="stylesheet" href="estilos.css">
+
+<title>Gestor de Inventario</title>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:22px;height:22px;stroke-width:2"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+      Gestor de Inventario
+    </h1>
+    <p id="header-sub">Cargando...</p>
+    <div id="sync-status" class="sync-badge hidden">⏳ Sincronizando...</div>
+  </div>
+
+  <nav class="nav">
+    <button class="active" onclick="showTab('inicio')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      Inicio
+    </button>
+    <button onclick="showTab('vender')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.97-1.67l1.38-7.84H6"/></svg>
+      Vender
+    </button>
+    <button onclick="showTab('ganancias')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Ganancias
+    </button>
+    <button onclick="showTab('auto')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Auto
+    </button>
+    <button onclick="showTab('sectores')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Sectores
+    </button>
+    <button onclick="showTab('productos')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+      Productos
+    </button>
+  </nav>
+
+  <div id="tab-inicio" class="section active">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-lbl">Sectores</div><div class="stat-val" id="s-cats">0</div></div>
+      <div class="stat"><div class="stat-lbl">Productos</div><div class="stat-val" id="s-prods">0</div></div>
+      <div class="stat"><div class="stat-lbl">Ventas hoy</div><div class="stat-val blue" id="s-ventas">0</div></div>
+      <div class="stat"><div class="stat-lbl">Ganancia total</div><div class="stat-val green" id="s-ganancia">$0</div></div>
+    </div>
+    <div id="home-alerts"></div>
+    <div id="home-venc"></div>
+    <div id="home-low"></div>
+    <div id="home-compras"></div>
+    <div id="home-ventas"></div>
+  </div>
+
+  <div id="tab-vender" class="section">
+    <div class="chips" id="vender-chips"></div>
+    <div id="vender-list"></div>
+  </div>
+
+  <div id="tab-ganancias" class="section">
+    <div id="gan-stats"></div>
+    <div id="gan-sectores"></div>
+    <div id="gan-historial"></div>
+  </div>
+
+  <div id="tab-auto" class="section">
+    <div id="auto-alertas"></div>
+    <div id="auto-compras"></div>
+    <div id="auto-vencimientos"></div>
+    <div id="auto-prediccion"></div>
+  </div>
+
+  <div id="tab-sectores" class="section">
+    <div id="sec-list"></div>
+  </div>
+
+  <div id="tab-productos" class="section">
+    <div class="chips" id="prod-chips"></div>
+    <div id="prod-list"></div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="openFab()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  <span id="fab-txt">Agregar</span>
+</button>
+
+<!-- Modal Sector -->
+<div class="modal-bg hidden" id="m-sector">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <h2 id="ms-title">Nuevo sector</h2>
+  <div class="field"><label>Nombre del sector</label><input id="ms-name" placeholder="Ej: Lácteos, Bebidas..."></div>
+  <div class="row2">
+    <div class="field"><label>Emoji</label><input id="ms-icon" placeholder="🥛" maxlength="4"></div>
+    <div class="field"><label>Color</label>
+      <select id="ms-color">
+        <option value="blue">🔵 Azul</option>
+        <option value="green">🟢 Verde</option>
+        <option value="amber">🟡 Ámbar</option>
+        <option value="coral">🟠 Coral</option>
+        <option value="purple">🟣 Violeta</option>
+        <option value="teal">🩵 Turquesa</option>
+        <option value="pink">🩷 Rosa</option>
+      </select>
+    </div>
+  </div>
+  <div class="mfooter">
+    <button class="btn" onclick="closeModals()">Cancelar</button>
+    <button class="btn btn-primary" onclick="saveSector()">Guardar</button>
+  </div>
+</div>
+</div>
+
+<!-- Modal Producto -->
+<div class="modal-bg hidden" id="m-prod">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <h2 id="mp-title">Nuevo producto</h2>
+  <div class="field"><label>Nombre</label><input id="mp-name" placeholder="Ej: Leche entera 1L"></div>
+  <div class="field"><label>SKU / Código <span style="font-weight:400;text-transform:none;font-size:10px">(opcional)</span></label><input id="mp-sku" placeholder="Ej: LEC-001 o 7791234567890"></div>
+  <div class="field"><label>Sector</label><select id="mp-cat"></select></div>
+  <div class="row2">
+    <div class="field"><label>Cantidad</label><input id="mp-qty" type="number" inputmode="numeric" min="0" placeholder="0"></div>
+    <div class="field"><label>Stock mínimo</label><input id="mp-min" type="number" inputmode="numeric" min="0" placeholder="5"></div>
+  </div>
+  <div class="field"><label>Fecha de vencimiento <span style="font-weight:400;text-transform:none;font-size:10px">(opcional)</span></label><input id="mp-venc" type="date"></div>
+  <div class="field"><label>Unidad de medida</label>
+    <select id="mp-unit">
+      <option value="uds">📦 Unidades</option>
+      <option value="kg">⚖️ Kilos</option>
+      <option value="L">🧴 Litros</option>
+      <option value="m">📏 Metros</option>
+      <option value="m2">📐 Metros²</option>
+      <option value="m3">📦 Metros³</option>
+      <option value="doc">🥚 Docenas</option>
+      <option value="caja">📦 Cajas</option>
+    </select>
+  </div>
+  <div class="field"><label>Fecha de vencimiento <span style="font-weight:400;text-transform:none;font-size:10px">(opcional)</span></label><input id="mp-venc" type="date"></div>
+  <div class="row2">
+    <div class="field"><label>Precio costo ($)</label><input id="mp-cost" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" oninput="calcPrev()"></div>
+    <div class="field"><label>Margen (%)</label><input id="mp-mg" type="number" inputmode="numeric" min="0" step="1" placeholder="30" oninput="calcPrev()"></div>
+  </div>
+  <div class="preview-box">
+    <div class="preview-row">Precio de venta calculado: <span id="pp-sale">—</span></div>
+    <div class="preview-row">Ganancia por unidad: <span id="pp-profit">—</span></div>
+  </div>
+  <div class="field"><label>Precio venta manual ($) <span style="font-weight:400;text-transform:none;font-size:10px">(opcional — sobreescribe el calculado)</span></label><input id="mp-sale" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" oninput="calcPrev()"></div>
+  <div class="mfooter">
+    <button class="btn" onclick="closeModals()">Cancelar</button>
+    <button class="btn btn-primary" onclick="saveProd()">Guardar</button>
+  </div>
+</div>
+</div>
+
+<!-- Modal Venta -->
+<div class="modal-bg hidden" id="m-venta">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <h2 id="mv-title">Registrar venta</h2>
+  <div id="mv-info" style="margin-bottom:14px"></div>
+  <div class="field">
+    <label>Cantidad a vender</label>
+    <div class="qty-ctrl">
+      <button class="qty-btn" onclick="chgQty(-1)">−</button>
+      <span class="qty-val" id="mv-qty">1</span>
+      <button class="qty-btn" onclick="chgQty(1)">+</button>
+    </div>
+  </div>
+  <div class="preview-box" style="margin-top:14px">
+    <div class="preview-row">Precio unitario de venta: <span id="mvp-unit">—</span></div>
+    <div class="preview-row">Total a cobrar: <span id="mvp-total">—</span></div>
+    <div class="preview-row">Tu ganancia: <span id="mvp-profit" style="color:var(--green-text)">—</span></div>
+  </div>
+  <div class="mfooter">
+    <button class="btn" onclick="closeModals()">Cancelar</button>
+    <button class="btn btn-success" onclick="confirmarVenta()">✓ Confirmar venta</button>
+  </div>
+</div>
+</div>
+
+<!-- Toast nativo -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- Offline banner -->
+<div id="offline-banner" class="offline-banner hidden">
+  <span>📴 Sin conexión — trabajando offline</span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

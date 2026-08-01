@@ -1,0 +1,306 @@
+/* =============================================
+   estilos.css — Optimizado para Android PWA
+   Botones táctiles grandes, inputs con teclado numérico,
+   animaciones suaves, modo oscuro preparado
+   ============================================= */
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --bg:#f5f5f0;--bg2:#fff;--bg3:#f0ede8;
+  --text:#1a1a18;--text2:#6b6b67;--text3:#9b9b97;
+  --border:#e0ddd8;--border2:#c8c5c0;
+  --blue:#378ADD;--blue-bg:#E6F1FB;--blue-text:#0C447C;
+  --green:#639922;--green-bg:#EAF3DE;--green-text:#27500A;
+  --amber:#BA7517;--amber-bg:#FAEEDA;--amber-text:#633806;
+  --red:#A32D2D;--red-bg:#FCEBEB;--red-text:#501313;
+  --radius:10px;--radius-sm:7px;
+  --touch-min:48px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root{
+    --bg:#1a1a18;--bg2:#2a2a26;--bg3:#33332e;
+    --text:#f0f0ea;--text2:#b0b0a8;--text3:#808078;
+    --border:#3a3a34;--border2:#4a4a44;
+    --blue-bg:#1a3a5c;--blue-text:#8ec4ff;
+    --green-bg:#1a3a0a;--green-text:#a4d46a;
+    --amber-bg:#3a2800;--amber-text:#f0c060;
+    --red-bg:#3a0a0a;--red-text:#f08080;
+  }
+}
+
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding-bottom:90px}
+
+/* =============================================
+   HEADER
+   ============================================= */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 16px 10px;position:sticky;top:0;z-index:100}
+.header h1{font-size:18px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px}
+.header p{font-size:12px;color:var(--text2);margin-top:2px}
+
+/* Badge de sync */
+.sync-badge{font-size:11px;color:var(--blue);background:var(--blue-bg);padding:3px 10px;border-radius:20px;margin-top:6px;display:inline-block;font-weight:600;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* =============================================
+   NAV — Botones táctiles grandes (min 48px)
+   ============================================= */
+.nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:99}
+.nav button{flex:1;padding:10px 2px 8px;border:none;border-bottom:2.5px solid transparent;background:transparent;color:var(--text2);cursor:pointer;font-size:10px;font-weight:500;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s;min-height:var(--touch-min)}
+.nav button svg{width:22px;height:22px;stroke-width:1.8}
+.nav button.active{color:var(--blue);border-bottom-color:var(--blue)}
+.nav button:active{opacity:.6;transform:scale(.97)}
+
+/* =============================================
+   SECTIONS
+   ============================================= */
+.section{padding:14px;display:none}
+.section.active{display:block}
+
+/* =============================================
+   CARDS
+   ============================================= */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+
+/* =============================================
+   STATS
+   ============================================= */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.stat{background:var(--bg3);border-radius:var(--radius-sm);padding:12px}
+.stat-lbl{font-size:11px;color:var(--text2);margin-bottom:3px}
+.stat-val{font-size:20px;font-weight:600;color:var(--text)}
+.stat-val.blue{color:var(--blue-text)}
+.stat-val.green{color:var(--green-text)}
+
+/* =============================================
+   BUTTONS — Mínimo 48px para touch
+   ============================================= */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:10px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg2);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:var(--touch-min);min-width:var(--touch-min)}
+.btn:active{transform:scale(.96);opacity:.85}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-success{background:var(--green);border-color:var(--green);color:#fff}
+.btn-danger{background:var(--red-bg);border-color:#f09595;color:var(--red-text)}
+.btn-warn{background:var(--amber-bg);border-color:#EF9F27;color:var(--amber-text)}
+.btn-sm{padding:8px 12px;font-size:13px}
+.btn-icon{width:48px;height:48px;padding:0;border-radius:var(--radius-sm);font-size:18px}
+
+/* =============================================
+   FAB — Floating Action Button
+   ============================================= */
+.fab{position:fixed;bottom:22px;right:16px;height:56px;padding:0 24px;border-radius:28px;background:var(--blue);border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;z-index:200;box-shadow:0 4px 16px rgba(55,138,221,.45);transition:transform .15s,box-shadow .15s;min-height:var(--touch-min)}
+.fab:active{transform:scale(.94);box-shadow:0 2px 8px rgba(55,138,221,.35)}
+.fab svg{width:22px;height:22px;stroke-width:2.5}
+
+/* =============================================
+   MODAL — Bottom sheet estilo Android
+   ============================================= */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg:not(.hidden){opacity:1;pointer-events:auto}
+.modal{background:var(--bg2);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 16px;padding-bottom:max(32px, env(safe-area-inset-bottom));max-height:92vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+.modal-bg:not(.hidden) .modal{transform:translateY(0)}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px}
+.modal h2{font-size:17px;font-weight:600;margin-bottom:16px;color:var(--text)}
+
+/* =============================================
+   FORM FIELDS
+   ============================================= */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.field input,.field select{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border2);background:var(--bg2);color:var(--text);font-size:16px;appearance:none;-webkit-appearance:none;min-height:var(--touch-min)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(55,138,221,.15)}
+.field input::placeholder{color:var(--text3)}
+.row2{display:flex;gap:9px}.row2 .field{flex:1}
+.mfooter{display:flex;gap:8px;margin-top:18px}.mfooter .btn{flex:1}
+
+/* =============================================
+   PRODUCT ITEMS
+   ============================================= */
+.prod-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.prod-item:last-child{border-bottom:none}
+
+/* =============================================
+   CHIPS
+   ============================================= */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{padding:7px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;white-space:nowrap;min-height:36px;display:flex;align-items:center}
+.chip.active{background:var(--blue-bg);border-color:var(--blue);color:var(--blue-text)}
+.chip:active{transform:scale(.95)}
+
+/* =============================================
+   PREVIEW BOX
+   ============================================= */
+.preview-box{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px;margin:10px 0}
+.preview-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;color:var(--text2)}
+.preview-row span{color:var(--text);font-weight:600}
+
+/* =============================================
+   QTY CONTROL
+   ============================================= */
+.qty-ctrl{display:flex;align-items:center;gap:16px;margin-top:8px}
+.qty-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg3);color:var(--text);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:500;transition:all .1s;min-height:var(--touch-min);min-width:var(--touch-min)}
+.qty-btn:active{transform:scale(.88);background:var(--border)}
+.qty-val{font-size:24px;font-weight:700;min-width:40px;text-align:center;color:var(--text)}
+
+/* =============================================
+   BAR
+   ============================================= */
+.bar-bg{height:8px;border-radius:4px;background:var(--bg3);margin:7px 0 4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+/* =============================================
+   TAGS
+   ============================================= */
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.tag-blue{background:var(--blue-bg);color:var(--blue-text)}
+.tag-green{background:var(--green-bg);color:var(--green-text)}
+.tag-amber{background:var(--amber-bg);color:var(--amber-text)}
+.tag-red{background:var(--red-bg);color:var(--red-text)}
+
+/* =============================================
+   EMPTY STATE
+   ============================================= */
+.empty{text-align:center;padding:40px 16px;color:var(--text2);font-size:14px;line-height:1.6}
+.empty svg{display:block;margin:0 auto 14px;opacity:.35;width:48px;height:48px}
+
+/* =============================================
+   UTILITIES
+   ============================================= */
+.hidden{display:none!important}
+
+/* =============================================
+   VENTA ROW
+   ============================================= */
+.venta-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.venta-row:last-child{border-bottom:none}
+
+/* =============================================
+   TOAST — Notificación nativa estilo Android
+   ============================================= */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#323232;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:500;z-index:400;opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 12px rgba(0,0,0,.25);max-width:90vw;text-align:center;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* =============================================
+   OFFLINE BANNER
+   ============================================= */
+.offline-banner{position:fixed;top:0;left:0;right:0;background:var(--amber-bg);color:var(--amber-text);padding:8px 16px;text-align:center;font-size:13px;font-weight:600;z-index:500;border-bottom:1px solid var(--amber);animation:slideDown .3s ease}
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+
+/* =============================================
+   SECTOR COLORS
+   ============================================= */
+.c-blue{--cc-bg:#E6F1FB;--cc-text:#0C447C;--cc-border:#378ADD;--cc-bar:#378ADD}
+.c-green{--cc-bg:#EAF3DE;--cc-text:#27500A;--cc-border:#639922;--cc-bar:#639922}
+.c-amber{--cc-bg:#FAEEDA;--cc-text:#633806;--cc-border:#BA7517;--cc-bar:#BA7517}
+.c-coral{--cc-bg:#FAECE7;--cc-text:#4A1B0C;--cc-border:#D85A30;--cc-bar:#D85A30}
+.c-purple{--cc-bg:#EEEDFE;--cc-text:#26215C;--cc-border:#534AB7;--cc-bar:#534AB7}
+.c-teal{--cc-bg:#E1F5EE;--cc-text:#04342C;--cc-border:#1D9E75;--cc-bar:#1D9E75}
+.c-pink{--cc-bg:#FBEAF0;--cc-text:#4B1528;--cc-border:#993556;--cc-bar:#993556}
+
+/* =============================================
+   RIPPLE EFFECT (Material Design)
+   ============================================= */
+.ripple{position:relative;overflow:hidden}
+.ripple::after{content:'';position:absolute;top:50%;left:50%;width:0;height:0;background:rgba(255,255,255,.3);border-radius:50%;transform:translate(-50%,-50%);transition:width .4s,height .4s}
+.ripple:active::after{width:200%;height:200%}
+
+/* =============================================
+   SCROLLBAR CUSTOM (Android style)
+   ============================================= */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* =============================================
+   SELECTION COLOR
+   ============================================= */
+::selection{background:var(--blue-bg);color:var(--blue-text)}
+
+
+/* =============================================
+   ALERTAS Y AUTOMATIZACIONES
+   ============================================= */
+
+/* Alert card */
+.alert-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;position:relative;overflow:hidden}
+.alert-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--radius) 0 0 var(--radius)}
+.alert-card.warning::before{background:var(--amber)}
+.alert-card.danger::before{background:var(--red)}
+.alert-card.info::before{background:var(--blue)}
+.alert-card.success::before{background:var(--green)}
+
+.alert-title{font-size:14px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.alert-text{font-size:13px;color:var(--text2);line-height:1.5}
+.alert-action{margin-top:10px}
+
+/* Vencimiento badge */
+.venc-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600}
+.venc-badge.critical{background:var(--red-bg);color:var(--red-text)}
+.venc-badge.warning{background:var(--amber-bg);color:var(--amber-text)}
+.venc-badge.ok{background:var(--green-bg);color:var(--green-text)}
+
+/* Lista de compras */
+.compra-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.compra-item:last-child{border-bottom:none}
+.compra-cant{font-size:13px;font-weight:600;color:var(--blue-text);min-width:60px;text-align:right}
+.compra-motivo{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* Predicción stats */
+.pred-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pred-box{background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.pred-val{font-size:18px;font-weight:700}
+.pred-val.up{color:var(--green-text)}
+.pred-val.down{color:var(--red-text)}
+.pred-lbl{font-size:11px;color:var(--text2);margin-top:2px}
+
+/* Progress ring */
+.ring{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--blue) var(--pct),var(--bg3) var(--pct));position:relative}
+.ring::after{content:'';position:absolute;width:36px;height:36px;border-radius:50%;background:var(--bg2)}
+.ring-text{position:relative;z-index:1;font-size:11px;font-weight:700;color:var(--text)}
+
+
+/* =============================================
+   AUTOMATIZACIONES
+   ============================================= */
+
+/* Alertas inteligentes */
+.alert-card{padding:14px;border-radius:var(--radius);margin-bottom:10px;border:1.5px solid var(--border);background:var(--bg2)}
+.alert-card.critical{border-color:var(--red);background:var(--red-bg)}
+.alert-card.warning{border-color:var(--amber);background:var(--amber-bg)}
+.alert-card.info{border-color:var(--blue);background:var(--blue-bg)}
+.alert-card.success{border-color:var(--green);background:var(--green-bg)}
+.alert-title{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.alert-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.alert-meta{font-size:11px;color:var(--text3);margin-top:6px}
+.alert-actions{display:flex;gap:8px;margin-top:10px}
+
+/* Lista de compras */
+.compra-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.compra-item:last-child{border-bottom:none}
+.compra-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--green);flex-shrink:0}
+.compra-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.compra-info{flex:1;margin-left:10px}
+.compra-name{font-size:14px;font-weight:500}
+.compra-detail{font-size:11px;color:var(--text2);margin-top:2px}
+.compra-qty{font-size:14px;font-weight:600;color:var(--blue-text);text-align:right}
+
+/* Vencimientos */
+.venc-card{padding:12px;border-radius:var(--radius);margin-bottom:8px;border:1.5px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:10px}
+.venc-card.critical{border-color:var(--red);background:var(--red-bg)}
+.venc-card.warning{border-color:var(--amber);background:var(--amber-bg)}
+.venc-card.ok{border-color:var(--green);background:var(--green-bg)}
+.venc-icon{font-size:24px}
+.venc-info{flex:1}
+.venc-name{font-size:14px;font-weight:500}
+.venc-date{font-size:12px;color:var(--text2)}
+.venc-dias{font-size:12px;font-weight:600}
+
+/* Predicción */
+.pred-card{padding:14px;border-radius:var(--radius);background:var(--bg3);margin-bottom:10px}
+.pred-title{font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pred-bar-bg{height:10px;border-radius:5px;background:var(--bg);overflow:hidden;margin:6px 0}
+.pred-bar-fill{height:100%;border-radius:5px;transition:width .6s ease}
+.pred-stats{display:flex;gap:16px;font-size:12px;color:var(--text2);margin-top:6px}
+.pred-stat b{color:var(--text)}

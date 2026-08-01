@@ -1,0 +1,95 @@
+{
+  "name": "Gestor de Inventario",
+  "short_name": "Inventario",
+  "description": "Control de stock, ventas y ganancias para tu negocio",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#378ADD",
+  "theme_color": "#378ADD",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Nueva venta",
+      "short_name": "Vender",
+      "description": "Registrar una venta rápida",
+      "url": "/index.html?action=vender",
+      "icons": [{ "src": "icons/shortcut-vender.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Ver stock bajo",
+      "short_name": "Stock bajo",
+      "description": "Productos con stock crítico",
+      "url": "/index.html?action=stock-bajo",
+      "icons": [{ "src": "icons/shortcut-stock.png", "sizes": "96x96" }]
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [
+    {
+      "src": "screenshots/screen1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Panel principal con estadísticas"
+    },
+    {
+      "src": "screenshots/screen2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Registro de ventas"
+    }
+  ]
+}
