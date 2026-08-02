@@ -417,7 +417,7 @@ function getGanFilterLabel() {
 //   =============================================
 function render() {
   document.getElementById('header-sub').textContent = D.cats.length + ' sectores · ' + D.prods.length + ' productos';
-  renderInicio(); renderVender(); renderGanancias(); renderSectores(); renderProductos();
+  renderInicio(); renderVender(); renderGanancias(); renderSectores(); renderProductos(); renderAuto();
 }
 
 function renderInicio() {
@@ -427,15 +427,6 @@ function renderInicio() {
   document.getElementById('s-ventas').textContent = vHoy.length;
   const totalGan = D.ventas.reduce((a, v) => a + v.totalProfit, 0);
   document.getElementById('s-ganancia').textContent = '$' + totalGan.toFixed(2);
-
-  // Alertas inteligentes
-  renderAlertas();
-
-  // Vencimientos
-  renderVencimientos();
-
-  // Lista de compras auto
-  renderListaCompras();
 
   const low = D.prods.filter(p => p.qty <= p.minQty);
   const hl = document.getElementById('home-low');
@@ -793,8 +784,8 @@ function getVencimientos() {
   const vencimientos = [];
 
   D.prods.forEach(p => {
-    if (!p.venc) return;
-    const dias = diasRestantes(p.venc);
+    if (!p.vencimiento) return;
+    const dias = diasRestantes(p.vencimiento);
     if (dias === null) return;
 
     let estado = 'ok';
@@ -805,7 +796,7 @@ function getVencimientos() {
     vencimientos.push({
       nombre: p.name,
       icono: getCat(p.catId).icon,
-      fecha: p.venc,
+      fecha: p.vencimiento,
       dias: dias,
       estado: estado,
       qty: p.qty,
