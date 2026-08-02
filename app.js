@@ -217,7 +217,7 @@ async function save() {
 //   NAVEGACIÓN
 //   =============================================
 let curTab = 'inicio';
-const TABS = ['inicio', 'vender', 'ganancias', 'sectores', 'productos'];
+const TABS = ['inicio', 'vender', 'ganancias', 'auto', 'sectores', 'productos'];
 
 function showTab(t) {
   curTab = t;
