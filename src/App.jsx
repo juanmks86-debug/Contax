@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { InventoryContext } from './context/InventoryContext';
 import Onboarding from './components/Onboarding';
+import PinLock from './components/PinLock';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
@@ -20,6 +21,7 @@ export default function App() {
   const { loading, cats, config } = useContext(InventoryContext);
   const [activeTab, setActiveTab] = useState('inicio');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
 
   // Modal states
   const [sectorModalOpen, setSectorModalOpen] = useState(false);
@@ -129,6 +131,10 @@ export default function App() {
 
   if (!config.businessType) {
     return <Onboarding />;
+  }
+
+  if (config.pinEnabled && !unlocked) {
+    return <PinLock onUnlock={() => setUnlocked(true)} />;
   }
 
   return (

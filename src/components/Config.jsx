@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
 import { RUBROS } from '../utils/businessTypes';
-import { Settings, ShieldAlert, Database, FileUp, FileDown, RefreshCw, Trash2, Heart, Tag, Plus, X } from 'lucide-react';
+import { Settings, ShieldAlert, Database, FileUp, FileDown, RefreshCw, Trash2, Heart, Tag, Plus, X, Lock, Sun, Moon, Monitor } from 'lucide-react';
 
 export default function Config() {
   const { 
@@ -22,6 +22,13 @@ export default function Config() {
 
   const [newFieldLabel, setNewFieldLabel] = useState('');
   const [newFieldType, setNewFieldType] = useState('text');
+
+  // Seguridad (PIN)
+  const [pinStep, setPinStep] = useState(null); // null | 'setup'
+  const [pinValue, setPinValue] = useState('');
+  const [pinConfirm, setPinConfirm] = useState('');
+  const [pinQuestion, setPinQuestion] = useState(config.pinQuestion || '');
+  const [pinAnswer, setPinAnswer] = useState('');
 
   useEffect(() => {
     setBusinessName(config.businessName);
@@ -67,6 +74,48 @@ export default function Config() {
     if (!window.confirm('¿Eliminar este campo personalizado? Los productos que ya lo tenían cargado no se van a borrar, pero el campo dejará de mostrarse.')) return;
     const customFields = (config.customFields || []).filter((f) => f.key !== key);
     updateConfig({ ...config, customFields });
+  };
+
+  const startPinSetup = () => {
+    setPinValue('');
+    setPinConfirm('');
+    setPinQuestion(config.pinQuestion || '');
+    setPinAnswer('');
+    setPinStep('setup');
+  };
+
+  const handleSavePin = (e) => {
+    e.preventDefault();
+    if (!/^\d{4}$/.test(pinValue)) {
+      alert('El PIN debe ser de 4 números.');
+      return;
+    }
+    if (pinValue !== pinConfirm) {
+      alert('Los PIN no coinciden.');
+      return;
+    }
+    if (!pinQuestion.trim() || !pinAnswer.trim()) {
+      alert('Completá la pregunta y la respuesta de seguridad, para poder recuperar el PIN si te lo olvidás.');
+      return;
+    }
+    updateConfig({
+      ...config,
+      pinEnabled: true,
+      pin: pinValue,
+      pinQuestion: pinQuestion.trim(),
+      pinAnswer: pinAnswer.trim()
+    });
+    setPinStep(null);
+    alert('PIN activado con éxito.');
+  };
+
+  const handleDisablePin = () => {
+    if (!window.confirm('¿Desactivar el PIN? Cualquiera que abra la app en este dispositivo va a poder entrar sin pedir nada.')) return;
+    updateConfig({ ...config, pinEnabled: false, pin: '', pinQuestion: '', pinAnswer: '' });
+  };
+
+  const handleThemeChange = (theme) => {
+    updateConfig({ ...config, theme });
   };
 
   const handleImportFile = async (e) => {
@@ -171,6 +220,116 @@ export default function Config() {
               Guardar Perfil
             </button>
           </form>
+        </div>
+
+        {/* APPEARANCE SECTION */}
+        <div className="card config-card">
+          <h2 className="config-card-title">
+            <Sun size={18} />
+            Apariencia
+          </h2>
+          <p className="config-card-desc">Elegí cómo se ve la app en este dispositivo.</p>
+
+          <div className="theme-options">
+            <button
+              type="button"
+              className={`theme-option ${(config.theme || 'system') === 'system' ? 'active' : ''}`}
+              onClick={() => handleThemeChange('system')}
+            >
+              <Monitor size={18} />
+              Automático
+            </button>
+            <button
+              type="button"
+              className={`theme-option ${config.theme === 'light' ? 'active' : ''}`}
+              onClick={() => handleThemeChange('light')}
+            >
+              <Sun size={18} />
+              Claro
+            </button>
+            <button
+              type="button"
+              className={`theme-option ${config.theme === 'dark' ? 'active' : ''}`}
+              onClick={() => handleThemeChange('dark')}
+            >
+              <Moon size={18} />
+              Oscuro
+            </button>
+          </div>
+        </div>
+
+        {/* SECURITY / PIN SECTION */}
+        <div className="card config-card">
+          <h2 className="config-card-title">
+            <Lock size={18} />
+            Seguridad
+          </h2>
+          <p className="config-card-desc">
+            Protegé la app con un PIN de 4 números para que no cualquiera que agarre el dispositivo pueda entrar.
+          </p>
+
+          {pinStep === 'setup' ? (
+            <form onSubmit={handleSavePin} style={{ marginTop: '14px' }}>
+              <div className="form-row">
+                <div className="form-field">
+                  <label>PIN (4 números)</label>
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={pinValue}
+                    onChange={(e) => setPinValue(e.target.value.replace(/\D/g, ''))}
+                    autoFocus
+                  />
+                </div>
+                <div className="form-field">
+                  <label>Repetir PIN</label>
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={pinConfirm}
+                    onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, ''))}
+                  />
+                </div>
+              </div>
+              <div className="form-field">
+                <label>Pregunta de seguridad (para recuperar el PIN)</label>
+                <input
+                  type="text"
+                  value={pinQuestion}
+                  onChange={(e) => setPinQuestion(e.target.value)}
+                  placeholder="Ej: ¿Nombre de mi primer local?"
+                  maxLength={60}
+                />
+              </div>
+              <div className="form-field">
+                <label>Respuesta</label>
+                <input
+                  type="text"
+                  value={pinAnswer}
+                  onChange={(e) => setPinAnswer(e.target.value)}
+                  placeholder="Tu respuesta"
+                  maxLength={60}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="button" className="btn" style={{ flex: 1 }} onClick={() => setPinStep(null)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Guardar PIN</button>
+              </div>
+            </form>
+          ) : config.pinEnabled ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '14px' }}>
+              <div className="pin-status-badge">PIN activado</div>
+              <button className="btn" style={{ width: '100%' }} onClick={startPinSetup}>Cambiar PIN</button>
+              <button className="btn btn-danger" style={{ width: '100%' }} onClick={handleDisablePin}>Desactivar PIN</button>
+            </div>
+          ) : (
+            <button className="btn btn-primary" style={{ width: '100%', marginTop: '14px' }} onClick={startPinSetup}>
+              <Lock size={16} />
+              Activar PIN
+            </button>
+          )}
         </div>
 
         {/* CUSTOM PRODUCT FIELDS SECTION */}
@@ -356,6 +515,45 @@ export default function Config() {
 
         .custom-field-chip button:hover {
           opacity: 1;
+        }
+
+        .theme-options {
+          display: flex;
+          gap: 8px;
+          margin-top: 14px;
+        }
+
+        .theme-option {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          padding: 14px 8px;
+          border-radius: var(--radius-sm);
+          border: 1px solid var(--border);
+          background: var(--bg-input);
+          color: var(--text-secondary);
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .theme-option.active {
+          border-color: var(--blue);
+          background: var(--blue-bg);
+          color: var(--blue-text, var(--blue));
+        }
+
+        .pin-status-badge {
+          display: inline-flex;
+          align-self: flex-start;
+          padding: 4px 10px;
+          border-radius: 20px;
+          background: var(--green-bg);
+          color: var(--green-text);
+          font-size: 12px;
+          font-weight: 700;
         }
       `}</style>
     </div>

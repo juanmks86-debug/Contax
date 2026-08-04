@@ -9,7 +9,12 @@ const DEFAULT_CONFIG = {
   currency: '$',
   logo: '💼',
   businessType: null, // se define en el registro/onboarding local
-  customFields: [] // campos propios que el usuario agrega, ej: [{key,label,type}]
+  customFields: [], // campos propios que el usuario agrega, ej: [{key,label,type}]
+  pinEnabled: false,
+  pin: '',
+  pinQuestion: '',
+  pinAnswer: '',
+  theme: 'system' // 'system' | 'light' | 'dark'
 };
 
 export const InventoryProvider = ({ children }) => {
@@ -63,6 +68,16 @@ export const InventoryProvider = ({ children }) => {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
+
+  // Apply theme preference (system/light/dark) to the document root
+  useEffect(() => {
+    const theme = config.theme || 'system';
+    if (theme === 'system') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }, [config.theme]);
 
   // Sync state to IndexedDB helpers
   const syncCats = async (newCats) => {
