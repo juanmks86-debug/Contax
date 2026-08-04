@@ -130,6 +130,9 @@ export default function Productos({ openProdModal, openVentaModal }) {
                         {cat.icon} {cat.name}
                       </span>
                       {p.sku && <span className="item-sku">SKU: {p.sku}</span>}
+                      {p.extra && Object.entries(p.extra).filter(([, v]) => v).map(([k, v]) => (
+                        <span key={k} className="item-sku">{v}</span>
+                      ))}
                     </div>
                   </div>
                   <div>

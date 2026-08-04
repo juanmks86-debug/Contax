@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { InventoryContext } from '../../context/InventoryContext';
+import { getRubroConfig } from '../../utils/businessTypes';
 
 export default function ProductModal({ isOpen, onClose, productId, prefilledCatId }) {
   const { cats, prods, saveProd, config } = useContext(InventoryContext);
@@ -14,8 +15,19 @@ export default function ProductModal({ isOpen, onClose, productId, prefilledCatI
   const [margin, setMargin] = useState('30');
   const [saleManual, setSaleManual] = useState('');
   const [vencimiento, setVencimiento] = useState('');
+  const [extra, setExtra] = useState({});
 
   const currency = config.currency || '$';
+
+  // Campos según el rubro elegido en el registro + los campos propios que
+  // el usuario haya agregado en Configuración. Se combinan sin duplicar keys.
+  const dynamicFields = useMemo(() => {
+    const rubroCfg = getRubroConfig(config.businessType);
+    const custom = config.customFields || [];
+    const seen = new Set(rubroCfg.extraFields.map((f) => f.key));
+    const merged = [...rubroCfg.extraFields, ...custom.filter((f) => !seen.has(f.key))];
+    return { showVencimiento: rubroCfg.showVencimiento, fields: merged };
+  }, [config.businessType, config.customFields]);
 
   // Load product if editing
   useEffect(() => {
@@ -33,6 +45,7 @@ export default function ProductModal({ isOpen, onClose, productId, prefilledCatI
           setMargin(String(prod.margin));
           setSaleManual(prod.saleManual ? String(prod.saleManual) : '');
           setVencimiento(prod.vencimiento || '');
+          setExtra(prod.extra || {});
         }
       } else {
         setName('');
@@ -45,6 +58,7 @@ export default function ProductModal({ isOpen, onClose, productId, prefilledCatI
         setMargin('30');
         setSaleManual('');
         setVencimiento('');
+        setExtra({});
       }
     }
   }, [isOpen, productId, prefilledCatId, prods, cats]);
@@ -79,7 +93,8 @@ export default function ProductModal({ isOpen, onClose, productId, prefilledCatI
       cost: parseFloat(cost) || 0,
       margin: parseFloat(margin) || 0,
       saleManual: parseFloat(saleManual) || 0,
-      vencimiento: vencimiento || null
+      vencimiento: dynamicFields.showVencimiento ? (vencimiento || null) : null,
+      extra
     };
 
     if (productId) {
@@ -164,14 +179,16 @@ export default function ProductModal({ isOpen, onClose, productId, prefilledCatI
           </div>
 
           <div className="form-row">
-            <div className="form-field">
-              <label>Fecha de Vencimiento</label>
-              <input
-                type="date"
-                value={vencimiento}
-                onChange={(e) => setVencimiento(e.target.value)}
-              />
-            </div>
+            {dynamicFields.showVencimiento && (
+              <div className="form-field">
+                <label>Fecha de Vencimiento</label>
+                <input
+                  type="date"
+                  value={vencimiento}
+                  onChange={(e) => setVencimiento(e.target.value)}
+                />
+              </div>
+            )}
 
             <div className="form-field">
               <label>Unidad de Medida</label>
@@ -187,6 +204,36 @@ export default function ProductModal({ isOpen, onClose, productId, prefilledCatI
               </select>
             </div>
           </div>
+
+          {/* Campos específicos del rubro + campos personalizados */}
+          {dynamicFields.fields.length > 0 && (
+            <div className="form-row" style={{ flexWrap: 'wrap' }}>
+              {dynamicFields.fields.map((f) => (
+                <div className="form-field" key={f.key} style={{ minWidth: '140px', flex: '1' }}>
+                  <label>{f.label}</label>
+                  {f.type === 'select' ? (
+                    <select
+                      value={extra[f.key] || ''}
+                      onChange={(e) => setExtra({ ...extra, [f.key]: e.target.value })}
+                    >
+                      <option value="">Seleccionar</option>
+                      {(f.options || []).map((opt) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={f.type === 'number' ? 'number' : 'text'}
+                      inputMode={f.type === 'number' ? 'decimal' : undefined}
+                      value={extra[f.key] || ''}
+                      onChange={(e) => setExtra({ ...extra, [f.key]: e.target.value })}
+                      placeholder={f.label}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="form-row">
             <div className="form-field">

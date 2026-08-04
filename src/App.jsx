@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { InventoryContext } from './context/InventoryContext';
+import Onboarding from './components/Onboarding';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
@@ -16,7 +17,7 @@ import ProductModal from './components/Modals/ProductModal';
 import SaleModal from './components/Modals/SaleModal';
 
 export default function App() {
-  const { loading, cats } = useContext(InventoryContext);
+  const { loading, cats, config } = useContext(InventoryContext);
   const [activeTab, setActiveTab] = useState('inicio');
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -124,6 +125,10 @@ export default function App() {
         `}</style>
       </div>
     );
+  }
+
+  if (!config.businessType) {
+    return <Onboarding />;
   }
 
   return (

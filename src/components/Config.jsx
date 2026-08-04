@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
-import { Settings, ShieldAlert, Database, FileUp, FileDown, RefreshCw, Trash2, Heart } from 'lucide-react';
+import { RUBROS } from '../utils/businessTypes';
+import { Settings, ShieldAlert, Database, FileUp, FileDown, RefreshCw, Trash2, Heart, Tag, Plus, X } from 'lucide-react';
 
 export default function Config() {
   const { 
@@ -15,13 +16,18 @@ export default function Config() {
   const [businessName, setBusinessName] = useState(config.businessName);
   const [logo, setLogo] = useState(config.logo);
   const [currency, setCurrency] = useState(config.currency);
+  const [businessType, setBusinessType] = useState(config.businessType || '');
   const [importError, setImportError] = useState('');
   const [importSuccess, setImportSuccess] = useState(false);
+
+  const [newFieldLabel, setNewFieldLabel] = useState('');
+  const [newFieldType, setNewFieldType] = useState('text');
 
   useEffect(() => {
     setBusinessName(config.businessName);
     setLogo(config.logo);
     setCurrency(config.currency);
+    setBusinessType(config.businessType || '');
   }, [config]);
 
   const handleSaveProfile = (e) => {
@@ -30,12 +36,37 @@ export default function Config() {
       alert('Por favor ingresa un nombre para tu negocio.');
       return;
     }
+    if (!businessType) {
+      alert('Por favor selecciona el rubro de tu negocio.');
+      return;
+    }
     updateConfig({
       businessName: businessName.trim(),
       logo: logo.trim() || '💼',
-      currency: currency.trim() || '$'
+      currency: currency.trim() || '$',
+      businessType
     });
     alert('¡Perfil del negocio actualizado con éxito!');
+  };
+
+  const handleAddCustomField = (e) => {
+    e.preventDefault();
+    const label = newFieldLabel.trim();
+    if (!label) {
+      alert('Ingresá un nombre para el campo.');
+      return;
+    }
+    const key = 'custom_' + label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36).slice(-4);
+    const customFields = [...(config.customFields || []), { key, label, type: newFieldType }];
+    updateConfig({ ...config, customFields });
+    setNewFieldLabel('');
+    setNewFieldType('text');
+  };
+
+  const handleRemoveCustomField = (key) => {
+    if (!window.confirm('¿Eliminar este campo personalizado? Los productos que ya lo tenían cargado no se van a borrar, pero el campo dejará de mostrarse.')) return;
+    const customFields = (config.customFields || []).filter((f) => f.key !== key);
+    updateConfig({ ...config, customFields });
   };
 
   const handleImportFile = async (e) => {
@@ -100,6 +131,16 @@ export default function Config() {
               />
             </div>
 
+            <div className="form-field">
+              <label>Rubro del Negocio</label>
+              <select value={businessType} onChange={(e) => setBusinessType(e.target.value)}>
+                <option value="" disabled>Seleccioná una opción</option>
+                {RUBROS.map((r) => (
+                  <option key={r.id} value={r.id}>{r.icon} {r.label}</option>
+                ))}
+              </select>
+            </div>
+
             <div className="form-row">
               <div className="form-field">
                 <label>Emoji de Logo</label>
@@ -128,6 +169,56 @@ export default function Config() {
 
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '8px' }}>
               Guardar Perfil
+            </button>
+          </form>
+        </div>
+
+        {/* CUSTOM PRODUCT FIELDS SECTION */}
+        <div className="card config-card">
+          <h2 className="config-card-title">
+            <Tag size={18} />
+            Campos Propios de Producto
+          </h2>
+          <p className="config-card-desc">
+            Además de los campos de tu rubro, podés agregar tus propios campos para el formulario de productos (ej: "Proveedor", "Ubicación en depósito").
+          </p>
+
+          {(config.customFields || []).length > 0 && (
+            <div className="custom-fields-list">
+              {config.customFields.map((f) => (
+                <div key={f.key} className="custom-field-chip">
+                  <span>{f.label} <em>({f.type === 'number' ? 'número' : 'texto'})</em></span>
+                  <button type="button" onClick={() => handleRemoveCustomField(f.key)} title="Eliminar campo">
+                    <X size={13} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <form onSubmit={handleAddCustomField} style={{ marginTop: '14px' }}>
+            <div className="form-row">
+              <div className="form-field">
+                <label>Nombre del campo</label>
+                <input
+                  type="text"
+                  value={newFieldLabel}
+                  onChange={(e) => setNewFieldLabel(e.target.value)}
+                  placeholder="Ej: Proveedor"
+                  maxLength={25}
+                />
+              </div>
+              <div className="form-field">
+                <label>Tipo</label>
+                <select value={newFieldType} onChange={(e) => setNewFieldType(e.target.value)}>
+                  <option value="text">Texto</option>
+                  <option value="number">Número</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" className="btn" style={{ width: '100%' }}>
+              <Plus size={16} />
+              Agregar Campo
             </button>
           </form>
         </div>
@@ -225,6 +316,46 @@ export default function Config() {
         .config-card.danger-zone {
           border-color: var(--red);
           background: rgba(239, 68, 68, 0.02);
+        }
+
+        .custom-fields-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .custom-field-chip {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 8px 5px 10px;
+          border-radius: 20px;
+          background: var(--blue-bg);
+          color: var(--blue-text, var(--blue));
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .custom-field-chip em {
+          font-style: normal;
+          opacity: 0.7;
+          font-weight: 500;
+        }
+
+        .custom-field-chip button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: inherit;
+          opacity: 0.7;
+          padding: 2px;
+        }
+
+        .custom-field-chip button:hover {
+          opacity: 1;
         }
       `}</style>
     </div>

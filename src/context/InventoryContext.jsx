@@ -7,7 +7,9 @@ export const InventoryContext = createContext();
 const DEFAULT_CONFIG = {
   businessName: 'Contax',
   currency: '$',
-  logo: '💼'
+  logo: '💼',
+  businessType: null, // se define en el registro/onboarding local
+  customFields: [] // campos propios que el usuario agrega, ej: [{key,label,type}]
 };
 
 export const InventoryProvider = ({ children }) => {
@@ -34,7 +36,7 @@ export const InventoryProvider = ({ children }) => {
         
         const storedConfig = localStorage.getItem('contax_config');
         if (storedConfig) {
-          setConfig(JSON.parse(storedConfig));
+          setConfig({ ...DEFAULT_CONFIG, ...JSON.parse(storedConfig) });
         }
 
         // Request browser notifications permission
