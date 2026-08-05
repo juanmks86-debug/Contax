@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
-import { Search, ScanBarcode, AlertTriangle } from 'lucide-react';
+import { Search, ScanBarcode, ShoppingBag } from 'lucide-react';
 
 export default function Vender({ openVentaModal }) {
   const { prods, cats, config } = useContext(InventoryContext);
