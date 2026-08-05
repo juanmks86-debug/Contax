@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
+import { formatMoney } from '../utils/format';
 import { 
   FolderKanban, 
   Package, 
@@ -101,7 +102,7 @@ export default function Dashboard({ setActiveTab }) {
           </div>
           <div className="stat-info">
             <span className="stat-label">Ganancia Total</span>
-            <span className="stat-value">{currency}{totalProfit.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="stat-value">{currency}{formatMoney(totalProfit)}</span>
           </div>
         </div>
       </div>
@@ -168,8 +169,8 @@ export default function Dashboard({ setActiveTab }) {
                   </span>
                 </div>
                 <div className="transaction-values">
-                  <span className="transaction-total">{currency}{v.total.toFixed(2)}</span>
-                  <span className="transaction-profit">+{currency}{v.totalProfit.toFixed(2)}</span>
+                  <span className="transaction-total">{currency}{formatMoney(v.total)}</span>
+                  <span className="transaction-profit">+{currency}{formatMoney(v.totalProfit)}</span>
                 </div>
               </div>
             ))}

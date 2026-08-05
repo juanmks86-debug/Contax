@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
 import { Search, ScanBarcode, ShoppingBag } from 'lucide-react';
+import { formatMoney } from '../utils/format';
 
 export default function Vender({ openVentaModal }) {
   const { prods, cats, config } = useContext(InventoryContext);
@@ -129,13 +130,13 @@ export default function Vender({ openVentaModal }) {
                     </div>
                   </div>
                   <div>
-                    <div className="item-card-price">{currency}{sale.toFixed(2)}</div>
-                    <div className="item-card-profit">+{currency}{profit.toFixed(2)}</div>
+                    <div className="item-card-price">{currency}{formatMoney(sale)}</div>
+                    <div className="item-card-profit">+{currency}{formatMoney(profit)}</div>
                   </div>
                 </div>
 
                 <div className="item-card-stats">
-                  <span>Costo: <b>{currency}{p.cost.toFixed(2)}</b></span>
+                  <span>Costo: <b>{currency}{formatMoney(p.cost)}</b></span>
                   <span>Margen: <b>{p.margin}%</b></span>
                   <span>Stock: <b className={`stock-indicator ${stockColorClass}`}>{stockLabel}</b></span>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
 import { generateCierreVentas } from '../utils/pdfGenerator';
+import { formatMoney } from '../utils/format';
 import { FileText, TrendingUp, DollarSign, PieChart as PieIcon } from 'lucide-react';
 import {
   AreaChart,
@@ -205,7 +206,7 @@ export default function Analytics() {
           </div>
           <div className="stat-info">
             <span className="stat-label">Ingresos Totales</span>
-            <span className="stat-value">{currency}{totalRevenue.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</span>
+            <span className="stat-value">{currency}{formatMoney(totalRevenue)}</span>
           </div>
         </div>
 
@@ -215,7 +216,7 @@ export default function Analytics() {
           </div>
           <div className="stat-info">
             <span className="stat-label">Ganancia Neta</span>
-            <span className="stat-value">{currency}{totalProfit.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</span>
+            <span className="stat-value">{currency}{formatMoney(totalProfit)}</span>
           </div>
         </div>
 
@@ -225,7 +226,7 @@ export default function Analytics() {
           </div>
           <div className="stat-info">
             <span className="stat-label">Costo de lo Vendido</span>
-            <span className="stat-value">{currency}{totalCostOfSales.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</span>
+            <span className="stat-value">{currency}{formatMoney(totalCostOfSales)}</span>
           </div>
         </div>
 

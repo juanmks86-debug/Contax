@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { InventoryContext } from '../context/InventoryContext';
 import { FolderKanban, Plus, Pencil, Trash2 } from 'lucide-react';
+import { formatMoney } from '../utils/format';
 
 export default function Sectores({ openSectorModal, openProdModal }) {
   const { cats, prods, delSector, config } = useContext(InventoryContext);
@@ -67,7 +68,7 @@ export default function Sectores({ openSectorModal, openProdModal }) {
 
                 <div className="sector-stats-row">
                   <span>Valor en Stock (Costo):</span>
-                  <b>{currency}{valStock.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b>
+                  <b>{currency}{formatMoney(valStock)}</b>
                 </div>
 
                 <div className="item-card-actions" style={{ marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid var(--border)' }}>
